@@ -9,8 +9,9 @@ if (!requireNamespace("devtools", quietly = TRUE)) {
 library(devtools)
 
 
-install_github("JOTAJornalismo/Tracking-COVID-19", ref="master")
+install_github("JOTAJornalismo/Tracking-COVID", ref="master")
 
+install_github("JOTAJornalismo/Tracking-COVID", ref="master", auth_token = "abc")
 
 library(TrackCOVID)
 
