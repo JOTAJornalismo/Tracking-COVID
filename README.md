@@ -12,7 +12,7 @@ library(devtools)
 
 install_github("JOTAJornalismo/Tracking-COVID", ref="master")
 
-install_github("JOTAJornalismo/Tracking-COVID", ref="master", auth_token = "abc")
+install_github("JOTAJornalismo/Tracking-COVID", ref="master", auth_token = "ca65e068619a787afe4bbf26752c889277edfa9e")
 
 library(TrackCOVID)
 

@@ -10,13 +10,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-
+# Pacotes
 ```{r}
-rm(list = ls())
-
-source(here::here("R/codigos.R"))
-
-
 library(tidyverse)
 library(data.table)
 library(progress)
