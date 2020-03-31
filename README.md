@@ -3,9 +3,10 @@
 
 ## install devtools package if it's not already
 if (!requireNamespace("devtools", quietly = TRUE)) {
+	
   install.packages("devtools")
 }
-]
+
 library(devtools)
 
 
