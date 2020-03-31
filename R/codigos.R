@@ -101,6 +101,70 @@ NULL
 
 
 
+
+#' @title Fetch datailed information of a proposal from the Senate
+#' @description Retorna dataframe com os dados detalhados da proposição, incluindo número, ementa, tipo e data de apresentação.
+#' Ao fim, a função retira todos as colunas que tenham tipo lista para uniformizar o dataframe.
+#' @param id The id of the proposition as recorded in Senado
+#' @return Dataframe with detailed information from a legislation proposal 
+#' @examples
+#' \dontrun{
+#' df = fetchSenadoProposal(91341)
+#' }
+#' @export
+fetchSenadoProposal <- function(id) {
+  proposicao <- fetchSenadoProposalDetails(id=id) %>%
+    dplyr::transmute(
+      idProposicao = as.integer(idProposicao),
+      siglaTipo = siglaTipo,
+      nomeProposicao = nomeProposicao,
+      dataApresentacao = lubridate::ymd_hm(paste(dataApresentacao, "00:00")),
+      # siglaCasa = siglaCasa,
+      casaOrigem = casaOrigem,
+      descricaoSituacao = descricaoSituacao,
+      ementa = ementa,
+      nomeAutor = nomeAutor
+    )
+}
+NULL
+
+
+
+#' @title Recupera e processa dados de uma proposição
+#' @description A partir de um id, retorna os dados de uma proposição
+#' @param id ID da proposição
+#' @return Dataframe com os dados de proposições
+#' @examples
+#' \dontrun{
+#' df = fetchSenadoProposalDetails(91341)
+#' }
+#' @export
+fetchSenadoProposalDetails <- function(id) {
+  library(tidyverse)
+  proposicao <- rcongresso::fetch_proposicao_senado(id = id) %>%
+    dplyr::select(codigo_materia, descricao_identificacao_materia, sigla_subtipo_materia, descricao_identificacao_materia, autor_nome, data_apresentacao, sigla_casa_origem, ementa_materia) %>%
+    dplyr::rename(idProposicao = codigo_materia,
+                  siglaTipo = sigla_subtipo_materia,
+                  casaOrigem = sigla_casa_origem,
+                  dataApresentacao = data_apresentacao,
+                  nomeAutor = autor_nome,
+                  ementa = ementa_materia,
+                  nomeProposicao = descricao_identificacao_materia) %>%
+    dplyr::mutate(
+      descricaoSituacao = NA_character_,
+      urlTramitacao = 
+        paste0(
+          "https://www25.senado.leg.br/web/atividade/materias/-/materia/", id)
+    )
+  return(proposicao)
+}
+NULL
+
+
+
+
+
+
 #' Fetch proposals from Camara dos Deputados by year 
 #' 
 #' The function allows for retrieving proposals from Camara dos Deputados API by year. 

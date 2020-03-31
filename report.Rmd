@@ -12,6 +12,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Pacotes
 ```{r}
+# rm(list = ls())
+
+
+
 library(tidyverse)
 library(data.table)
 library(progress)
@@ -61,10 +65,10 @@ prop_camara_old <- fread('data/prop_camara.csv')
 novas <- anti_join(prop_camara_old, prop_camara) 
 
 
-knitr::kable(nova)
+knitr::kable(novas)
 
 
-lista_camara <- bind_rows(prop_camara_old, prop_camara)
+prop_camara <- bind_rows(prop_camara_old, prop_camara)
 
 
 prop_camara <- prop_camara %>% 
@@ -100,3 +104,36 @@ fwrite(lista_senado, 'data/lista_senado.csv', row.names = FALSE)
 ```
 
 
+
+
+# Baixa dados detalhados da Senado
+```{r}
+barra <- progress_bar$new(total = length(ids1), 
+                          format = "[:bar] :percent eta: :eta")
+
+
+prop_senado <- map_df(ids1, 
+                      ~{ 
+                        barra$tick()
+                           fetchSenadoProposal(.x)
+                           })
+
+
+prop_senado_old <- fread('data/prop_senado.csv')
+
+
+novas <- anti_join(prop_senado_old, prop_senado) 
+
+
+knitr::kable(novas)
+
+
+prop_senado <- bind_rows(prop_senado_old, prop_senado)
+
+
+prop_senado <- prop_senado %>% 
+  distinct(idProposicao, nomeProposicao, .keep_all = TRUE)
+
+
+fwrite(prop_camara, 'data/prop_senado.csv', row.names = FALSE)
+```
